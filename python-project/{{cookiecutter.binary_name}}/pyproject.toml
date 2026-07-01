@@ -1,0 +1,145 @@
+[build-system]
+{%- if cookiecutter.versioning == "dynamic" %}
+requires = ["hatchling (>=1.29.0,<2.0.0)", "hatch-vcs (>=0.5.0,<1.0.0)"]
+{%- else %}
+requires = ["hatchling (>=1.29.0,<2.0.0)"]
+{%- endif %}
+build-backend = "hatchling.build"
+
+[project]
+name = "{{ cookiecutter.binary_name }}"
+{%- if cookiecutter.versioning == "dynamic" %}
+dynamic = ["version"]
+{%- else %}
+version = "0.1.0"
+{%- endif %}
+description = "{{ cookiecutter.project_description }}"
+authors = [
+    {name = "{{ cookiecutter.author }}", email = "{{ cookiecutter.email }}"}
+]
+readme = "README.md"
+{%- if cookiecutter.license != "None" %}
+license = "{{ cookiecutter.license }}"
+{%- endif %}
+requires-python = ">={{ cookiecutter.python_version }}"
+keywords = []
+classifiers = [
+    "Development Status :: 3 - Alpha",
+{%- if cookiecutter.project_type == "application" %}
+    "Intended Audience :: End Users/Desktop",
+{%- else %}
+    "Intended Audience :: Developers",
+{%- endif %}
+{%- if cookiecutter.project_type == "application" and cookiecutter.gui == "yes" %}
+    "Operating System :: POSIX :: Linux",
+    "Operating System :: Microsoft :: Windows",
+{%- else %}
+    "Operating System :: OS Independent",
+{%- endif %}
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: {{ cookiecutter.python_version }}",
+{%- if cookiecutter.project_type == "application" %}
+    "Topic :: Utilities",
+{%- else %}
+    "Topic :: Software Development :: Libraries",
+{%- endif %}
+    "Typing :: Typed",
+]
+dependencies = [
+    "sevaht-utility>=1.0.0",
+{%- if cookiecutter.project_type == "application" and cookiecutter.gui == "yes" %}
+    "sevaht-gui",
+    "Pillow>=12.2.0",
+{%- endif %}
+]
+{%- if cookiecutter.project_type == "application" %}
+
+[project.scripts]
+{{ cookiecutter.binary_name }} = "{{ cookiecutter.project_slug }}.__main__:main"
+{%- endif %}
+
+[dependency-groups]
+dev = [
+    "black (>=26.3.1,<27.0.0)",
+    "build (>=1.4.2,<2.0.0)",
+    "mypy (>=1.20.0,<2.0.0)",
+    "pytest (>=9.0.2,<10.0.0)",
+    "ruff (>=0.15.8,<0.16.0)",
+    "twine (>=6.2.0,<7.0.0)",
+    "vulture (>=2.14,<3.0.0)",
+]
+{%- if cookiecutter.project_type == "library" %}
+docs = [
+    "sphinx (>=8.1.0,<9.0.0)",
+    "furo (>=2024.8.6)",
+    "myst-parser (>=4.0.0,<5.0.0)",
+]
+{%- endif %}
+
+[project.urls]
+Homepage = "https://github.com/{{ cookiecutter.github_owner }}/{{ cookiecutter.binary_name }}"
+{%- if cookiecutter.project_type == "library" %}
+Documentation = "https://{{ cookiecutter.github_owner }}.github.io/{{ cookiecutter.binary_name }}/"
+{%- endif %}
+Source = "https://github.com/{{ cookiecutter.github_owner }}/{{ cookiecutter.binary_name }}"
+Issues = "https://github.com/{{ cookiecutter.github_owner }}/{{ cookiecutter.binary_name }}/issues"
+{%- if cookiecutter.versioning == "dynamic" %}
+
+[tool.hatch.version]
+source = "vcs"
+fallback-version = "0.0.0.dev0"
+
+# Allow building before any tags/commits exist (fresh repo, or a source tree
+# with no .git): hatch-vcs/setuptools-scm falls back to this instead of
+# erroring. Real tags/commits override it, so this only matters pre-history.
+[tool.hatch.version.raw-options]
+fallback_version = "0.0.0"
+{%- endif %}
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/{{ cookiecutter.project_slug }}"]
+
+[tool.hatch.build.targets.sdist]
+# Allowlist so dev/local files (.claude, checks, publish-test.sh, .github, ...)
+# never leak into a published sdist. pyproject.toml/PKG-INFO/README/.gitignore
+# are force-included by hatchling regardless.
+{%- if cookiecutter.license != "None" %}
+include = ["/src", "/tests", "/LICENSE"]
+{%- else %}
+include = ["/src", "/tests"]
+{%- endif %}
+
+[tool.black]
+line-length = {{ cookiecutter.max_line_length }}
+skip-magic-trailing-comma = true
+
+[tool.mypy]
+strict = true
+exclude = ["^docs/", "^dist/"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = {{ cookiecutter.max_line_length }}
+{%- if cookiecutter.project_type == "library" %}
+extend-exclude = ["docs"]
+{%- endif %}
+
+[tool.ruff.lint]
+extend-ignore = ["COM812", "COM819", "E203", "E501", "TD003"]
+select = [
+    "A", "ANN", "ARG", "ASYNC", "B", "BLE", "C4", "C90", "COM",
+    "DTZ", "E", "EM", "ERA", "F", "FA", "FLY", "FURB", "I",
+    "ISC", "LOG", "N", "PERF", "PGH", "PIE", "PLR", "PLW", "PTH",
+    "Q", "RET", "RSE", "RUF", "S", "SIM", "TC", "TCH", "TD",
+    "TID", "TRY", "UP"
+]
+
+[tool.ruff.lint.per-file-ignores]
+"checks" = ["S603"]
+"tests/**/*" = ["PLR2004", "S101"]
+
+[tool.vulture]
+min_confidence = 70
