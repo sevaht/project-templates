@@ -7,6 +7,7 @@
     "crate_name": "{{ cookiecutter.binary_name.replace('-', '_') }}",
     "project_description": "A Rust project.",
     "project_type": ["application", "library"],
+    "layout": ["single-crate", "workspace"],
     "keywords": "{{ cookiecutter.project_name.lower().split()[:5] | join(', ') }}",
     "categories": "{{ 'command-line-utilities' if cookiecutter.project_type == 'application' else 'development-tools' }}",
     "license": [
@@ -22,6 +23,7 @@
         "binary_name": "Package and binary name (kebab-case)",
         "crate_name": "Crate name, as written in Rust code (snake_case)",
         "project_type": "Project type",
+        "layout": "Layout: one crate, or a Cargo workspace with this crate under crates/",
         "keywords": "crates.io keywords, comma-separated (at most 5)",
         "categories": "crates.io category slugs, comma-separated (https://crates.io/category_slugs)",
         "rust_version": "Minimum supported Rust version (the 2024 edition needs 1.85+)"

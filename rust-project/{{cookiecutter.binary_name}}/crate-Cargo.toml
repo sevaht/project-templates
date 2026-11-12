@@ -1,0 +1,40 @@
+# The first member crate of a workspace layout. The post-generation hook moves
+# this file to crates/{{ cookiecutter.binary_name }}/Cargo.toml, or deletes it
+# for the single-crate layout.
+[package]
+name = "{{ cookiecutter.binary_name }}"
+description = "{{ cookiecutter.project_description }}"
+keywords = [
+{%- for keyword in cookiecutter.keywords.split(',') if keyword.strip() -%}
+"{{ keyword.strip() }}"{{ ", " if not loop.last }}
+{%- endfor -%}
+]
+categories = [
+{%- for category in cookiecutter.categories.split(',') if category.strip() -%}
+"{{ category.strip() }}"{{ ", " if not loop.last }}
+{%- endfor -%}
+]
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+authors.workspace = true
+license.workspace = true
+repository.workspace = true
+readme.workspace = true
+{%- if cookiecutter.crate_name != cookiecutter.binary_name.replace('-', '_') %}
+
+[lib]
+name = "{{ cookiecutter.crate_name }}"
+{%- endif %}
+{%- if cookiecutter.project_type == "application" %}
+
+[dependencies]
+anyhow.workspace = true
+clap.workspace = true
+thiserror.workspace = true
+tracing.workspace = true
+tracing-subscriber.workspace = true
+{%- endif %}
+
+[lints]
+workspace = true

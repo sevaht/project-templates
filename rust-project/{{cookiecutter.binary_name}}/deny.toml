@@ -12,3 +12,4 @@ yanked = "deny"
 
 [bans]
 wildcards = "deny"           # no `version = "*"` dependencies
+multiple-versions = "allow"  # transitive duplicates are not ours to fix (as in clippy)

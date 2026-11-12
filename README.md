@@ -50,6 +50,12 @@ same metadata as the python template, plus:
   logging options (`--log-file`, and one of `-v`, `-q`, `--debug`) wired to
   `tracing`, and integration tests that run the executable. A library starts
   from a documented, empty `lib.rs`.
+- **`layout`**: `single-crate`, or `workspace`. A workspace keeps the
+  toolchain files, `./checks`, lints (`[workspace.lints]`), shared package
+  metadata (`[workspace.package]`) and dependency versions
+  (`[workspace.dependencies]`) at the root, and puts this first crate under
+  `crates/<binary_name>/`. Add more crates beside it; each inherits with
+  `field.workspace = true` and `[lints] workspace = true`.
 - **`crate_name`**: the name used in Rust code, derived from `binary_name`.
 - **`keywords`** and **`categories`**: crates.io metadata, which clippy
   requires of any publishable package.

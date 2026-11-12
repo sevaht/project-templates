@@ -3,7 +3,9 @@
 Writes the chosen LICENSE from the shared license texts and prunes the files
 that do not apply to the selected project type: libraries drop the binary entry
 point, its command-line and logging modules, and the command-line tests (the
-only tests the template provides).
+only tests the template provides). For the workspace layout it then moves the
+crate (its manifest, sources and tests) under ``crates/``; the single-crate
+layout drops that member manifest instead.
 """
 
 from __future__ import annotations
@@ -35,6 +37,19 @@ def write_license() -> None:
     )
 
 
+def arrange_layout() -> None:
+    member_manifest = Path("crate-Cargo.toml")
+    if r"{{ cookiecutter.layout }}" != "workspace":
+        remove_path(member_manifest)
+        return
+    crate_path = Path("crates") / r"{{ cookiecutter.binary_name }}"
+    crate_path.mkdir(parents=True)
+    member_manifest.rename(crate_path / "Cargo.toml")
+    for name in ("src", "tests"):
+        if Path(name).exists():
+            Path(name).rename(crate_path / name)
+
+
 def main() -> int:
     write_license()
     if r"{{ cookiecutter.project_type }}" == "library":
@@ -43,6 +58,7 @@ def main() -> int:
         remove_path(source_path / "arguments.rs")
         remove_path(source_path / "logging.rs")
         remove_path(Path("tests"))
+    arrange_layout()
     return 0
 
 

@@ -23,7 +23,7 @@ $ ./checks --coverage
 Browse the generated documentation, private items included:
 
 ```console
-$ cargo doc --document-private-items --open
+$ cargo doc --workspace --document-private-items --open
 ```
 {%- if cookiecutter.project_type == "application" %}
 
