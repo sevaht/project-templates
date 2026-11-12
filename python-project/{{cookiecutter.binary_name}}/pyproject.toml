@@ -18,9 +18,7 @@ authors = [
     {name = "{{ cookiecutter.author }}", email = "{{ cookiecutter.email }}"}
 ]
 readme = "README.md"
-{%- if cookiecutter.license != "None" %}
 license = "{{ cookiecutter.license }}"
-{%- endif %}
 requires-python = ">={{ cookiecutter.python_version }}"
 keywords = []
 classifiers = [
@@ -104,11 +102,7 @@ packages = ["src/{{ cookiecutter.project_slug }}"]
 # Allowlist so dev/local files (.claude, checks, publish-test.sh, .github, ...)
 # never leak into a published sdist. pyproject.toml/PKG-INFO/README/.gitignore
 # are force-included by hatchling regardless.
-{%- if cookiecutter.license != "None" %}
 include = ["/src", "/tests", "/LICENSE"]
-{%- else %}
-include = ["/src", "/tests"]
-{%- endif %}
 
 [tool.black]
 line-length = {{ cookiecutter.max_line_length }}

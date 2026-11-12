@@ -25,13 +25,8 @@ def remove_path(path: Path) -> None:
 
 def write_license() -> None:
     license_id = r"{{ cookiecutter.license }}"
-    if license_id == "None":
-        return
     source_file = (
-        Path(r"{{ cookiecutter._repo_dir }}").resolve().parent
-        / ".shared"
-        / "licenses"
-        / f"{license_id}.txt"
+        Path(r"{{ shared_directory }}") / "licenses" / f"{license_id}.txt"
     )
     license_template = Template(source_file.read_text())
     (Path.cwd() / "LICENSE").write_text(
